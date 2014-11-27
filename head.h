@@ -36,6 +36,13 @@ typedef struct	s_pos
 	int 		y;
 }				t_pos;
 
+typedef struct	s_3dpos
+{
+	int			x;
+	int 		y;
+	int         z;
+}				t_3dpos;
+
 typedef struct  s_color
 {
 	char	r;
@@ -57,5 +64,6 @@ void	ft_put_pixel(t_env env, t_pos point, t_color color);
 void	ft_line_put(t_env env, t_pos p1, t_pos p2, t_color color);
 void	ft_put_square(t_env env, t_pos p1, t_pos p2, t_color color, int i);
 void	ft_fill_square(t_env env, t_pos p1, t_pos p2, t_color color);
+t_pos	ft_3d_to_2d(t_3dpos dp1);
 
 #endif

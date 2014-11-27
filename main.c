@@ -122,22 +122,51 @@ int main (int ac, char **av)
 	ac = ac;
 	av = av;
 	t_env	env;
-	// t_pos	start;
-	// t_pos	end;
-	// t_color	color;
 
-	// start.x = ft_atoi(av[1]);
-	// start.y = ft_atoi(av[2]);
-	// end.x = ft_atoi(av[3]);
-	// end.y = ft_atoi(av[4]);
-	// color.t = 0xFF0000;
+	t_color 	color;
+	color.r = 0xFF;
+	color.g = 99;
+	color.b = 99;
 
+	t_3dpos dp1 = {0, 0, 0};
+	t_3dpos dp2 = {100, 0, 0};
+	t_3dpos dp3 = {100, 100, 0};
+	t_3dpos dp4 = {0, 100, 0};
+	
+	t_3dpos dp5 = {0, 0, 100};
+	t_3dpos dp6 = {100, 0, 100};
+	t_3dpos dp7 = {100, 100, 100};
+	t_3dpos dp8 = {0, 100, 100};
+	t_pos	p1 = ft_3d_to_2d(dp1);
+	t_pos	p2 = ft_3d_to_2d(dp2);
+	t_pos	p3 = ft_3d_to_2d(dp3);
+	t_pos	p4 = ft_3d_to_2d(dp4);
+	
+	t_pos	p5 = ft_3d_to_2d(dp5);
+	t_pos	p6 = ft_3d_to_2d(dp6);
+	t_pos	p7 = ft_3d_to_2d(dp7);
+	t_pos	p8 = ft_3d_to_2d(dp8);
 	env.mlx = mlx_init();
 	env.win = mlx_new_window (env.mlx, 480, 480, "42 FDF");
 	//ft_line_put(env, start, end, color);
+
+	ft_line_put(env, p1, p2, color);
+	ft_line_put(env, p2, p3, color);
+	ft_line_put(env, p3, p4, color);
+	ft_line_put(env, p4, p1, color);
 	
+	ft_line_put(env, p1, p5, color);
+	ft_line_put(env, p2, p6, color);
+	ft_line_put(env, p3, p7, color);
+	ft_line_put(env, p4, p8, color);
+
+	ft_line_put(env, p5, p6, color);
+	ft_line_put(env, p6, p7, color);
+	ft_line_put(env, p7, p8, color);
+	ft_line_put(env, p8, p5, color);
+
 	mlx_key_hook(env.win, key_hook, &env);
-	mlx_mouse_hook(env.win, mouse_hook, &env);
+	// mlx_mouse_hook(env.win, mouse_hook, &env);
 	mlx_loop(env.mlx);
 	return (0);
 }

@@ -12,6 +12,18 @@
 
 #include "head.h"
 
+t_pos	ft_3d_to_2d(t_3dpos dp1)
+{
+	float cst1 = 1;
+	float cst2 = 1;
+	t_pos p1;
+
+	p1.x = (cst1 * dp1.x) - (cst2 * dp1.y);
+	p1.y = dp1.z + ((cst1 / 2) * dp1.x) + ((cst2 / 2) * dp1.y);
+
+	return (p1);
+}
+
 static int	ft_abs(int n)
 {
 	if (n < 0)
