@@ -69,8 +69,6 @@ void	ft_put_square(t_env env, t_pos p1, t_pos p2, t_color color, int i)
 
 
 
-
-
 void	ft_red_square(int x, int y, t_env env)
 {
 	int tx;
