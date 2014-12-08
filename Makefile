@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	=	fdf
-SRC		=	main.c line.c square.c
+SRC		=	main.c line.c perspective.c readmap.c libmlx.c bonus.c move.c libft/get_next_line.c
 
 FLAGS =		-Wall -Wextra -Werror
 CC	=		gcc
@@ -19,7 +19,8 @@ CC	=		gcc
 all: $(NAME)
 
 $(NAME):
-	gcc -Wall -Werror -Wextra $(SRC) -I. -o $(NAME) libft/libft.a -L/usr/X11/lib -lmlx -lXext -lX11
+	gcc -Wall -Werror -Wextra $(SRC) -I. -o $(NAME) \
+	libft/libft.a -L/usr/X11/lib -lmlx -lXext -lX11
 	./fdf 240 240 240 360
 
 clean:

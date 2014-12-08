@@ -12,73 +12,76 @@
 
 #include "head.h"
 
-t_pos	ft_3d_to_2d(t_3dpos dp1)
-{
-	// float cst1 = 1;
-	// float cst2 = 1;
-	t_pos p1;
-
-	p1.x = dp1.x - dp1.y;
-	p1.y = dp1.z + (dp1.x / 2) + (dp1.y / 2);
-
-	return (p1);
-}
-
-void	ft_3d_line_put(t_env env, t_3dpos dp1, t_3dpos dp2, t_color color)
+void	ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2, t_img img)
 {
 	t_pos p1;
 	t_pos p2;
 
+	dp1.x = dp1.x * all->zoom + (SIZE_WIN_X / 2);
+	dp1.y = dp1.y * all->zoom + (SIZE_WIN_Y / 8);
+	dp2.x = dp2.x * all->zoom + (SIZE_WIN_X / 2);
+	dp2.y = dp2.y * all->zoom + (SIZE_WIN_Y / 8);
+	dp1.z *= all->alt;
+	dp2.z *= all->alt;
+	color_alt(all, (dp1.z + dp2.z) / 2);
 	p1 = ft_3d_to_2d(dp1);
 	p2 = ft_3d_to_2d(dp2);
-	ft_line_put(env, p1, p2, color);
+	ft_put_pixel_img(all->env, p1, all->img);
+	ft_line_put(all, p1, p2, img);
 }
 
-void	ft_line_put(t_env env, t_pos p1, t_pos p2, t_color color)
+void	ft_line_put(t_all *all, t_pos p1, t_pos p2, t_img img)
 {
-	int		i;
-	int		xinc;
-	int		yinc;
-	int		cumul;
+	t_line		line;
 
-	p2.x -= p1.x;
-	p2.y -= p1.y;
-	xinc = (p2.x > 0) ? 1 : -1;
-	yinc = (p2.y > 0) ? 1 : -1;
-	p2.x = abs(p2.x) ;
-	p2.y = abs(p2.y) ;
-  	ft_put_pixel(env, p1, color);
-  	i = 1;
-  	if (p2.x > p2.y)
-  	{
-    	cumul = p2.x / 2 ;
-    	while (i <= p2.x)
-    	{
-			p1.x += xinc ;
-			cumul += p2.y ;
-			if ( cumul >= p2.x )
-			{
-				cumul -= p2.x ;
-				p1.y += yinc;
-			}
-    	  	ft_put_pixel(env, p1, color); 
- 			i++;
- 		}
- 	}
-    else
-    {
-    	cumul = p2.y / 2;
-    	while (i <= p2.y)
-    	{
-			p1.y += yinc;
-			cumul += p2.x;
-			if ( cumul >= p2.y )
-			{
-				cumul -= p2.y;
-				p1.x += xinc;
-			}
-				ft_put_pixel(env, p1, color);
-			i++;
-  		}
+	line.inc.x = ((p2.x - p1.x) > 0) ? 1 : -1;
+	line.inc.y = ((p2.y - p1.y) > 0) ? 1 : -1;
+	line.dx = abs(p2.x - p1.x);
+	line.dy = abs(p2.y - p1.y);
+	line.p1 = p1;
+	line.p2 = p2;
+	if (line.dx > line.dy)
+		ft_line_put_1(all, line, img);
+	else
+		ft_line_put_2(all, line, img);
+}
+
+void	ft_line_put_1(t_all *all, t_line line, t_img img)
+{
+	int			i;
+	int			cumul;
+
+	i = 1;
+	cumul = line.dx / 2;
+	while (i++ <= line.dx)
+	{
+		line.p1.x += line.inc.x;
+		cumul += line.dy;
+		if (cumul >= line.dx)
+		{
+			cumul -= line.dx;
+			line.p1.y += line.inc.y;
+		}
+		ft_put_pixel_img(all->env, line.p1, img);
+	}
+}
+
+void	ft_line_put_2(t_all *all, t_line line, t_img img)
+{
+	int			i;
+	int			cumul;
+
+	i = 1;
+	cumul = line.dy / 2;
+	while (i++ <= line.dy)
+	{
+		line.p1.y += line.inc.y;
+		cumul += line.dx;
+		if (cumul >= line.dy)
+		{
+			cumul -= line.dy;
+			line.p1.x += line.inc.x;
+		}
+		ft_put_pixel_img(all->env, line.p1, img);
 	}
 }

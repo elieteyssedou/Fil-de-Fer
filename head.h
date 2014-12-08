@@ -16,57 +16,94 @@
 # include "libft/libft.h"
 # include <mlx.h>
 # include <unistd.h>
-#include <stdio.h>
 # include <math.h>
+# include "libft/get_next_line.h"
 
-# define Z (cos(x));
+# include <stdio.h> //A ENLEVER
 
-typedef struct 		s_env
+# define SIZE_WIN_X 720
+# define SIZE_WIN_Y 720
+# define GAP 5
+# define ALT 7
+
+typedef unsigned char	t_byte;
+
+typedef struct	s_env
 {
-	void			*mlx;
-	void			*win;
-}					t_env;
+	void		*mlx;
+	void		*win;
+}				t_env;
 
-typedef struct		s_pos
+typedef struct s_img
 {
-	int				x;
-	int 			y;
-}					t_pos;
+	void		*img;
+	int			bpp;
+	int			sizeline;
+	int         endian;
+	int			clrline;
+	char		*data;
+}				t_img;
 
-typedef struct		s_3dpos
+typedef struct	s_pos
 {
-	int				x;
-	int 			y;
-	int				z;
-}					t_3dpos;
+	int			x;
+	int			y;
+}				t_pos;
 
-typedef struct		s_color
+typedef struct	s_3dpos
 {
-	unsigned char	r;
-	unsigned char	g;
-	unsigned char	b;
-}					t_color;
+	int			x;
+	int			y;
+	int			z;
+}				t_3dpos;
 
-void	ft_perfect_line_put(t_env env, t_pos start, t_pos end, t_color color);
-void	ft_direct_x_line(t_env env, t_pos start, t_pos end, t_color color);
-void	ft_direct_y_line(t_env env, t_pos start, t_pos end, t_color color);
-void	ft_line_put(t_env env, t_pos start, t_pos end, t_color color);
-void	ft_red_square(int x, int y, t_env env);
-void	ft_green_square(int x, int y, t_env env);
-void	ft_blue_square(int x, int y, t_env env);
-void	ft_clear_square(int x, int y, t_env env);
-void	ft_clear_screen(t_env env);
-int		ft_color_to_int(t_color color);
-void	ft_put_pixel(t_env env, t_pos point, t_color color);
-void	ft_line_put(t_env env, t_pos p1, t_pos p2, t_color color);
-void	ft_put_square(t_env env, t_pos p1, t_pos p2, t_color color, int i);
-void	ft_fill_square(t_env env, t_pos p1, t_pos p2, t_color color);
-t_pos	ft_3d_to_2d(t_3dpos dp1);
-t_color	ft_rgb_to_color(unsigned char r, unsigned char g, unsigned char b);
-void	ft_3d_line_put(t_env env, t_3dpos dp1, t_3dpos dp2, t_color color);
-t_3dpos	ft_new_3d_pos(int x, int y, int z);
-void	ft_3d_gen_tab(t_3dpos tab[][20], int e, int v);
-void	ft_put_3d_tab(t_env env, t_3dpos tab[][20], t_color color);
-void	ft_cp_tab(t_3dpos tab[][20], t_3dpos tab2[][20]);
+typedef struct	s_all
+{
+	t_env		env;
+	t_3dpos		**tab;
+	t_pos		max;
+	t_img		img;
+	t_pos		posimg;
+	int			re;
+	int			alt;
+	int			zoom;
+	int			r;
+}				t_all;
+
+typedef struct	s_color
+{
+	t_byte		r;
+	t_byte		g;
+	t_byte		b;
+}				t_color;
+
+typedef struct	s_line
+{
+	t_pos		p1;
+	t_pos		p2;
+	t_color		clr;
+	t_pos		inc;
+	int			dx;
+	int			dy;
+}				t_line;
+
+int				ft_color_to_int(t_color color);
+void			ft_put_pixel(t_env env, t_pos point, t_color color);
+void			ft_line_put(t_all *all, t_pos p1, t_pos p2, t_img img);
+void			ft_line_put_1(t_all *all, t_line line, t_img img);
+void			ft_line_put_2(t_all *all, t_line line, t_img img);
+void			ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2, t_img img);
+void			ft_put_3d_tab(t_all *all);
+void			ft_end_line(t_all *all, t_3dpos **tab, t_img img, t_pos max);
+t_pos			ft_3d_to_2d(t_3dpos dp1);
+t_color			ft_rgb_to_color(t_byte r, t_byte g, t_byte b);
+t_3dpos			**ft_fill_tab(t_list *lst, t_3dpos pt);
+t_all			ft_read_map(int fd, char c);
+void			ft_put_pixel_img(t_env env, t_pos point, t_img img);
+void			color_alt(t_all *all, int z);
+void			move_up(t_all *all);
+void			move_down(t_all *all);
+void			move_left(t_all *all);
+void			move_right(t_all *all);
 
 #endif

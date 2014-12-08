@@ -12,246 +12,110 @@
 
 #include "head.h"
 
-int	mouse_hook(int button, int x, int y, t_env *env)
+void	allinit(t_all *all)
 {
-	static t_pos	p1;
-	static t_pos	p2;
-	t_color 	color;
-	static	int i;
+	all->re = 1;
+	all->alt = ALT;
+	all->posimg.x = (SIZE_WIN_X / 2);
+	all->posimg.y = (SIZE_WIN_Y / 8);
+	all->zoom = GAP;
+}
 
-	color.r = 0xFF;
-	color.g = 99;
-	color.b = 99;
-
-	ft_blue_square(-10, -10, *env);
-	if (button == 1)
+int		mouse_hook(int button, int x, int y, t_all *all)
+{
+	(void)x;
+	(void)y;
+	if (button == 4)
 	{
-		p1.x = x;
-		p1.y = y;
-		ft_put_square(*env, p1, p2, color, i);
+		all->zoom++;
+		all->alt++;
+		all->re = 1;
 	}
-	else if (button == 3)
+	if (button == 5)
 	{
-		p2.x = x;
-		p2.y = y;
-		ft_green_square(x, y, *env);
-	}
-	else if (button == 2)
-	{
-		if(i == 0)
-			i = 1;
-		else
-			i = 0;
+		if (all->alt > 1)
+			all->alt--;
+		if (all->zoom)
+			all->zoom--;
+		all->re = 1;
 	}
 	return (0);
 }
 
-int	key_hook (int keycode, t_env *env)
+int	key_hook(int keycode, t_all *all)
 {
-	//static int ox;
-
-	env = env;
 	if (keycode == 65307)
 		exit(0);
-	// else
-	// {	
-	// 	t_3dpos tab[10][100];
-	// 	static t_color blue = {0, 0, 0xFF};
-
-	// 	blue.g += 10;
-	// 	t_color black = {0, 0, 0};
-
-	// 	if (ox < 500)
-	// 		ox += 10;
-	// 	ft_3d_gen_tab(tab, 20, ox);
-	// 	ft_put_3d_tab(*env, tab, blue);
-
-	// 	ft_3d_gen_tab(tab, 20, ox - 10);
-	// 	ft_put_3d_tab(*env, tab, black);
-
-	// 	ft_3d_gen_tab(tab, 20, ox);
-	// 	ft_put_3d_tab(*env, tab, blue);
-	// }
+	if (keycode == 65362)
+		move_up(all);
+	if (keycode == 65364)
+		move_down(all);
+	if (keycode == 65361)
+		move_left(all);
+	if (keycode == 65363)
+		move_right(all);
+	if (keycode == 65451)
+	{
+		all->alt += 1;
+		all->re = 1;
+	}
+	if (keycode == 65453)
+	{
+		if (all->alt)
+			all->alt -= 1;
+		all->re = 1;
+	}
+	if (keycode == 'u')
+	{
+		all->r += 0.1;
+		all->re = 1;
+	}
+	if (keycode == 'i')
+	{
+		all->r -= 0.1;
+		all->re = 1;
+	}
 	return (0);
 }
 
-void	ft_cp_tab(t_3dpos tab[][20], t_3dpos tab2[][20])
+int	loop_hook(t_all *all)
 {
-	int x;
-	int y;
-
-	x = 0;
-	y = 0;
-	while (y < 20)
+	if(all->re)
 	{
-		x = 0;
-		while (x < 20)
-		{
-			tab2[x][y] = tab[x][y];
-			x++;
-		}
-		y++;
+		ft_bzero(all->img.data, 4 * SIZE_WIN_X * SIZE_WIN_Y);
+		ft_put_3d_tab(all);
+		mlx_put_image_to_window(all->env.mlx, all->env.win,\
+			all->img.img, 0, 0);
+		mlx_string_put(all->env.mlx, all->env.win, 10, 20, 0x98CD00,\
+			"Height change : +/-.");
+		mlx_string_put(all->env.mlx, all->env.win, 10, 40, 0x98CD00,\
+			"Zoom : Scroll mouse");
+		mlx_string_put(all->env.mlx, all->env.win, 10, 60, 0x98CD00,\
+			"Navigation : Arrows");
+		all->re = 0;
 	}
-}
-
-int loop_hook(t_env *env)
-{
-	static int ox;
-	static int tg = 0;
-	static int tb = 0;
-	static int tr = 0;
-	static t_3dpos tab[20][20];
-	static t_3dpos tab2[20][20];
-	static t_color blue = {0, 0, 0};
-	t_color black = {0, 0, 0};
-	// t_pos p1 = {0,0};
-	// t_pos p2 = {2400, 1200};
-
-	if (tg == 0)
-	{
-		blue.g += 5;
-		if (blue.g >= 243)
-			tg = 1;
-	}
-	else
-	{
-		blue.g -= 5;
-		if (blue.g < 50)
-			tg = 0;
-	}
-
-	if (tr == 0)
-	{
-		blue.r += 1;
-		if (blue.r >= 243)
-			tr = 1;
-	}
-	else
-	{
-		blue.r -= 1;
-		if (blue.r <50)
-			tr = 0;
-	}
-
-	if (tb == 0)
-	{
-		blue.b += 2;
-		if (blue.b >= 243)
-			tr = 1;
-	}
-	else
-	{
-		blue.b -= 2;
-		if (blue.b < 50)
-			tr = 0;
-	}
-
-	if (ox < 20000)
-		ox += 1;
-	ft_3d_gen_tab(tab, 60, ox);
-	ft_put_3d_tab(*env, tab2, black);
-	ft_put_3d_tab(*env, tab, blue);
-	ft_cp_tab(tab, tab2);
-	usleep(20000);
-	//usleep(2000);
 	return (0);
 }
 
-t_color	ft_rgb_to_color(unsigned char r, unsigned char g, unsigned char b)
-{
-	t_color color;
-
-	color.r = r;
-	color.g = g;
-	color.b = b;
-	return (color);
-}
-
-int		ft_color_to_int(t_color color)
-{
-	int c;
-
-	c = color.r;
-	c = c << 8;
-	c += color.g;
-	c = c << 8;
-	c += color.b;
-	return (c);
-}
-
-void	ft_put_pixel(t_env env, t_pos point, t_color color)
-{
-	mlx_pixel_put(env.mlx, env.win, point.x, point.y, ft_color_to_int(color));
-}
-
-t_3dpos	ft_new_3d_pos(int x, int y, int z)
-{
-	t_3dpos dp1;
-
-	dp1.x = x;
-	dp1.y = y;
-	dp1.z = z;
-	return (dp1);
-}
-
-void	ft_3d_gen_tab(t_3dpos tab[][20], int e, int v)
-{
-	int x;
-	int y;
-	//int z;
-
-	x = 0;
-	y = 0;
-	//z = 0;
-	while (y < 20)
-	{
-		x = 0;
-		while (x < 20)
-		{
-			tab[x][y] = ft_new_3d_pos(x * e + 650, y *e - 500, ((cos(((x + (v/5.0)) / 2.0)) + (-sin(((y + (v/5.0)) / 2.0)))) * 60));
-			x++;
-		}
-		y++;
-	}
-}
-
-void	ft_put_3d_tab(t_env env, t_3dpos tab[][20], t_color color)
-{
-	int x;
-	int y;
-
-
-
-	y = 0;
-	while (y < 19)
-	{
-		x = 0;
-		while (x < 19)
-		{
-			ft_3d_line_put(env, tab[y][x], tab[y][x + 1], color);
-			ft_3d_line_put(env, tab[y][x], tab[y + 1][x], color);	
-			x++;
-		}
-		y++;
-	}
-}
-
-int main (int ac, char **av)
+int main(int ac, char **av)
 {
 	ac = ac;
 	av = av;
-	t_env	env;
+	t_all	*all;
+	int		fd;
 
-	env.mlx = mlx_init();
-	env.win = mlx_new_window (env.mlx, 2400, 1200, "42 FDF");
-	
-	//t_color blue = {0, 0, 0xFF};
-	// t_3dpos tab[10][10];
-	// ft_3d_gen_tab(tab, 20, 10);
-	// ft_put_3d_tab(env, tab, blue);
-	mlx_key_hook(env.win, key_hook, &env);
-	mlx_loop_hook(env.mlx, loop_hook, &env);
-	// mlx_mouse_hook(env.win, mouse_hook, &env);
-	mlx_loop(env.mlx);
+	fd = open("map/42.fdf", O_RDONLY);
+	all = (t_all *)malloc(sizeof(all));
+	*all = ft_read_map(fd, ' ');
+	all->env.mlx = mlx_init();
+	all->env.win = mlx_new_window(all->env.mlx, SIZE_WIN_X, SIZE_WIN_Y, "42 FDF");
+	all->img.img = mlx_new_image(all->env.mlx, SIZE_WIN_X, SIZE_WIN_Y);
+	all->img.data = mlx_get_data_addr(all->img.img, &all->img.bpp, &all->img.sizeline, &all->img.endian);
+	all->img.clrline = 0x000000;
+	allinit(all);
+	mlx_key_hook(all->env.win, key_hook, all);
+	mlx_loop_hook(all->env.mlx, loop_hook, all);
+	mlx_mouse_hook(all->env.win, mouse_hook, all);
+	mlx_loop(all->env.mlx);
 	return (0);
 }
