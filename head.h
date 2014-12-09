@@ -21,10 +21,10 @@
 
 # include <stdio.h> //A ENLEVER
 
-# define SIZE_WIN_X 720
-# define SIZE_WIN_Y 720
-# define GAP 5
-# define ALT 7
+# define SIZE_WIN_X 1920
+# define SIZE_WIN_Y 1080
+# define GAP 20
+# define ALT 5
 
 typedef unsigned char	t_byte;
 
@@ -67,7 +67,9 @@ typedef struct	s_all
 	int			re;
 	int			alt;
 	int			zoom;
-	int			r;
+	float		rx;
+	float		ry;
+	float		r;
 }				t_all;
 
 typedef struct	s_color
@@ -89,13 +91,13 @@ typedef struct	s_line
 
 int				ft_color_to_int(t_color color);
 void			ft_put_pixel(t_env env, t_pos point, t_color color);
-void			ft_line_put(t_all *all, t_pos p1, t_pos p2, t_img img);
+void			ft_line_put(t_all *all, t_pos p1, t_pos p2);
 void			ft_line_put_1(t_all *all, t_line line, t_img img);
 void			ft_line_put_2(t_all *all, t_line line, t_img img);
-void			ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2, t_img img);
+void			ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2);
 void			ft_put_3d_tab(t_all *all);
-void			ft_end_line(t_all *all, t_3dpos **tab, t_img img, t_pos max);
-t_pos			ft_3d_to_2d(t_3dpos dp1);
+void			ft_end_line(t_all *all, t_3dpos **tab, t_pos max);
+t_pos			ft_3d_to_2d(t_3dpos dp1, float rx, float ry);
 t_color			ft_rgb_to_color(t_byte r, t_byte g, t_byte b);
 t_3dpos			**ft_fill_tab(t_list *lst, t_3dpos pt);
 t_all			ft_read_map(int fd, char c);

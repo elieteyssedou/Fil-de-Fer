@@ -12,25 +12,29 @@
 
 #include "head.h"
 
-void	ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2, t_img img)
+void	ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2)
 {
 	t_pos p1;
 	t_pos p2;
 
-	dp1.x = dp1.x * all->zoom + (SIZE_WIN_X / 2);
-	dp1.y = dp1.y * all->zoom + (SIZE_WIN_Y / 8);
-	dp2.x = dp2.x * all->zoom + (SIZE_WIN_X / 2);
-	dp2.y = dp2.y * all->zoom + (SIZE_WIN_Y / 8);
+	dp1.x = dp1.x * all->zoom;
+	dp1.y = dp1.y * all->zoom;
+	dp2.x = dp2.x * all->zoom;
+	dp2.y = dp2.y * all->zoom;
 	dp1.z *= all->alt;
 	dp2.z *= all->alt;
-	color_alt(all, (dp1.z + dp2.z) / 2);
-	p1 = ft_3d_to_2d(dp1);
-	p2 = ft_3d_to_2d(dp2);
+	color_alt(all, ((dp1.z + dp2.z) / 2));
+	p1 = ft_3d_to_2d(dp1, all->rx, all->ry);
+	p2 = ft_3d_to_2d(dp2, all->rx, all->ry);
+	p1.x += all->posimg.x;
+	p1.y += all->posimg.y;
+	p2.x += all->posimg.x;
+	p2.y += all->posimg.y;
 	ft_put_pixel_img(all->env, p1, all->img);
-	ft_line_put(all, p1, p2, img);
+	ft_line_put(all, p1, p2);
 }
 
-void	ft_line_put(t_all *all, t_pos p1, t_pos p2, t_img img)
+void	ft_line_put(t_all *all, t_pos p1, t_pos p2)
 {
 	t_line		line;
 
@@ -41,9 +45,9 @@ void	ft_line_put(t_all *all, t_pos p1, t_pos p2, t_img img)
 	line.p1 = p1;
 	line.p2 = p2;
 	if (line.dx > line.dy)
-		ft_line_put_1(all, line, img);
+		ft_line_put_1(all, line, all->img);
 	else
-		ft_line_put_2(all, line, img);
+		ft_line_put_2(all, line, all->img);
 }
 
 void	ft_line_put_1(t_all *all, t_line line, t_img img)

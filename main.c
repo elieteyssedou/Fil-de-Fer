@@ -15,26 +15,28 @@
 void	allinit(t_all *all)
 {
 	all->re = 1;
-	all->alt = ALT;
+	all->alt = 1;
 	all->posimg.x = (SIZE_WIN_X / 2);
-	all->posimg.y = (SIZE_WIN_Y / 8);
+	all->posimg.y = (SIZE_WIN_Y / 2);
 	all->zoom = GAP;
+	all->rx = 2;
+	all->ry = 2;
 }
 
 int		mouse_hook(int button, int x, int y, t_all *all)
 {
 	(void)x;
 	(void)y;
-	if (button == 4)
+	if (button == 1)
 	{
+		all->alt += 1;
 		all->zoom++;
-		all->alt++;
 		all->re = 1;
 	}
-	if (button == 5)
+	if (button == 3)
 	{
-		if (all->alt > 1)
-			all->alt--;
+		if (all->alt != 1)
+			all->alt -= 1;
 		if (all->zoom)
 			all->zoom--;
 		all->re = 1;
@@ -65,20 +67,59 @@ int	key_hook(int keycode, t_all *all)
 			all->alt -= 1;
 		all->re = 1;
 	}
-	if (keycode == 'u')
+	if (keycode == 65464)
 	{
-		all->r += 0.1;
+		if (all->rx != -1 || all->ry != -1)
+		{
+			all->rx += 1;
+			all->ry += 1;
+		}
 		all->re = 1;
 	}
-	if (keycode == 'i')
+	if (keycode == 65458)
 	{
-		all->r -= 0.1;
+		if (all->rx != 0.5 || all->ry != 0.5)
+		{
+			all->rx -= 0.5;
+			all->ry -= 0.5;
+		}
+		all->re = 1;
+	}
+	if (keycode == 65465)
+	{
+		all->zoom++;
+		all->re = 1;
+	}
+	if (keycode == 65462)
+	{
+		if (all->zoom)
+			all->zoom--;
 		all->re = 1;
 	}
 	return (0);
 }
 
-int	loop_hook(t_all *all)
+void	ft_is_fd(int fd, char *av)
+{
+	if (fd == -1)
+	{
+		ft_putstr_fd("fdf: ", 2);
+		ft_putstr_fd(&av[1], 2);
+		ft_putendl_fd(": Does not exists or is invalid.", 2);
+		exit (0);
+	}
+}
+
+void	ft_ac_error(int ac)
+{
+	if (ac != 2)
+	{
+		ft_putendl_fd("fdf: Map missing, or please put only one argument.", 2);
+		exit (0);
+	}
+}
+
+int		loop_hook(t_all *all)
 {
 	if(all->re)
 	{
@@ -104,7 +145,7 @@ int main(int ac, char **av)
 	t_all	*all;
 	int		fd;
 
-	fd = open("map/42.fdf", O_RDONLY);
+	fd = open("map/mountain.fdf", O_RDONLY);
 	all = (t_all *)malloc(sizeof(all));
 	*all = ft_read_map(fd, ' ');
 	all->env.mlx = mlx_init();

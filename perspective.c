@@ -12,12 +12,12 @@
 
 #include "head.h"
 
-t_pos	ft_3d_to_2d(t_3dpos dp1)
+t_pos	ft_3d_to_2d(t_3dpos dp1, float rx, float ry)
 {
 	t_pos p1;
 
 	p1.x = dp1.x - dp1.y;
-	p1.y = dp1.z + (dp1.x / 2) + (dp1.y / 2);
+	p1.y = dp1.z + (dp1.x / rx) + (dp1.y / ry);
 	return (p1);
 }
 
@@ -37,22 +37,22 @@ void	ft_put_3d_tab(t_all *all)
 	int	y;
 
 	y = 0;
-	color_alt(all, (all->tab[0][0].z + all->tab[0][1].z) >> 1);
+	color_alt(all, ((all->tab[0][0].z + all->tab[0][1].z) / 2));
 	while (y < (all->max.y - 1))
 	{
 		x = 0;
 		while (x < (all->max.x - 1))
 		{
-			ft_3d_line(all, all->tab[y][x], all->tab[y][x + 1], all->img);
-			ft_3d_line(all, all->tab[y][x], all->tab[y + 1][x], all->img);
+			ft_3d_line(all, all->tab[y][x], all->tab[y][x + 1]);
+			ft_3d_line(all, all->tab[y][x], all->tab[y + 1][x]);
 			x++;
 		}
 		y++;
 	}
-	ft_end_line(all, all->tab, all->img, all->max);
+	ft_end_line(all, all->tab, all->max);
 }
 
-void	ft_end_line(t_all *all, t_3dpos **tab, t_img img, t_pos max)
+void	ft_end_line(t_all *all, t_3dpos **tab, t_pos max)
 {
 	int x;
 	int y;
@@ -61,12 +61,12 @@ void	ft_end_line(t_all *all, t_3dpos **tab, t_img img, t_pos max)
 	x = 0;
 	while (y + 1 < max.y)
 	{
-		ft_3d_line(all, tab[y][max.x - 1], tab[y + 1][max.x - 1], img);
+		ft_3d_line(all, tab[y][max.x - 1], tab[y + 1][max.x - 1]);
 		y++;
 	}
 	while (x + 1 < max.x)
 	{
-		ft_3d_line(all, tab[max.y - 1][x], tab[max.y - 1][x + 1], img);
+		ft_3d_line(all, tab[max.y - 1][x], tab[max.y - 1][x + 1]);
 		x++;
 	}
 }
