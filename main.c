@@ -47,7 +47,7 @@ int		mouse_hook(int button, int x, int y, t_all *all)
 int	key_hook(int keycode, t_all *all)
 {
 	if (keycode == 65307)
-		exit(0);
+		all->re = -1;
 	if (keycode == 65362)
 		move_up(all);
 	if (keycode == 65364)
@@ -99,30 +99,12 @@ int	key_hook(int keycode, t_all *all)
 	return (0);
 }
 
-void	ft_is_fd(int fd, char *av)
-{
-	if (fd == -1)
-	{
-		ft_putstr_fd("fdf: ", 2);
-		ft_putstr_fd(&av[1], 2);
-		ft_putendl_fd(": Does not exists or is invalid.", 2);
-		exit (0);
-	}
-}
-
-void	ft_ac_error(int ac)
-{
-	if (ac != 2)
-	{
-		ft_putendl_fd("fdf: Map missing, or please put only one argument.", 2);
-		exit (0);
-	}
-}
-
 int		loop_hook(t_all *all)
 {
 	if(all->re)
 	{
+		if (all->re == -1)
+			ft_free_all(all);
 		ft_bzero(all->img.data, 4 * SIZE_WIN_X * SIZE_WIN_Y);
 		ft_put_3d_tab(all);
 		mlx_put_image_to_window(all->env.mlx, all->env.win,\
@@ -145,7 +127,9 @@ int main(int ac, char **av)
 	t_all	*all;
 	int		fd;
 
-	fd = open("map/mountain.fdf", O_RDONLY);
+	ft_ac_error(ac);
+	fd = open(av[1], O_RDONLY);
+	ft_is_fd(fd, av[1]);
 	all = (t_all *)malloc(sizeof(all));
 	*all = ft_read_map(fd, ' ');
 	all->env.mlx = mlx_init();
@@ -153,10 +137,12 @@ int main(int ac, char **av)
 	all->img.img = mlx_new_image(all->env.mlx, SIZE_WIN_X, SIZE_WIN_Y);
 	all->img.data = mlx_get_data_addr(all->img.img, &all->img.bpp, &all->img.sizeline, &all->img.endian);
 	all->img.clrline = 0x000000;
+	all->name = av[1];
 	allinit(all);
 	mlx_key_hook(all->env.win, key_hook, all);
 	mlx_loop_hook(all->env.mlx, loop_hook, all);
 	mlx_mouse_hook(all->env.win, mouse_hook, all);
+	mlx_expose_hook(all->env.win, expose_hook, all);
 	mlx_loop(all->env.mlx);
 	return (0);
 }

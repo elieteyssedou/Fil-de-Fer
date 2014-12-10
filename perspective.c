@@ -51,22 +51,3 @@ void	ft_put_3d_tab(t_all *all)
 	}
 	ft_end_line(all, all->tab, all->max);
 }
-
-void	ft_end_line(t_all *all, t_3dpos **tab, t_pos max)
-{
-	int x;
-	int y;
-
-	y = 0;
-	x = 0;
-	while (y + 1 < max.y)
-	{
-		ft_3d_line(all, tab[y][max.x - 1], tab[y + 1][max.x - 1]);
-		y++;
-	}
-	while (x + 1 < max.x)
-	{
-		ft_3d_line(all, tab[max.y - 1][x], tab[max.y - 1][x + 1]);
-		x++;
-	}
-}

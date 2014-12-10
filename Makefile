@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	=	fdf
-SRC		=	main.c line.c perspective.c readmap.c libmlx.c bonus.c move.c libft/get_next_line.c
+SRC		=	main.c line.c perspective.c readmap.c libmlx.c bonus.c move.c free.c libft/get_next_line.c
 
 FLAGS =		-Wall -Wextra -Werror
 CC	=		gcc

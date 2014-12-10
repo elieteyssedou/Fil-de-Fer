@@ -19,8 +19,6 @@
 # include <math.h>
 # include "libft/get_next_line.h"
 
-# include <stdio.h> //A ENLEVER
-
 # define SIZE_WIN_X 1920
 # define SIZE_WIN_Y 1080
 # define GAP 20
@@ -61,7 +59,7 @@ typedef struct	s_all
 {
 	t_env		env;
 	t_3dpos		**tab;
-	t_pos		max;
+	t_3dpos		max;
 	t_img		img;
 	t_pos		posimg;
 	int			re;
@@ -70,6 +68,7 @@ typedef struct	s_all
 	float		rx;
 	float		ry;
 	float		r;
+	char		*name;
 }				t_all;
 
 typedef struct	s_color
@@ -96,7 +95,7 @@ void			ft_line_put_1(t_all *all, t_line line, t_img img);
 void			ft_line_put_2(t_all *all, t_line line, t_img img);
 void			ft_3d_line(t_all *all, t_3dpos dp1, t_3dpos dp2);
 void			ft_put_3d_tab(t_all *all);
-void			ft_end_line(t_all *all, t_3dpos **tab, t_pos max);
+void			ft_end_line(t_all *all, t_3dpos **tab, t_3dpos max);
 t_pos			ft_3d_to_2d(t_3dpos dp1, float rx, float ry);
 t_color			ft_rgb_to_color(t_byte r, t_byte g, t_byte b);
 t_3dpos			**ft_fill_tab(t_list *lst, t_3dpos pt);
@@ -107,5 +106,12 @@ void			move_up(t_all *all);
 void			move_down(t_all *all);
 void			move_left(t_all *all);
 void			move_right(t_all *all);
+void			ft_dir_err(int erno);
+void			ft_free_map(t_all *all);
+void			ft_free_all(t_all *all);
+void			ft_ac_error(int ac);
+void			ft_is_fd(int fd, char *av);
+int				expose_hook(t_all *all);
+void			cartridge(t_all *all);
 
 #endif

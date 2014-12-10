@@ -48,16 +48,6 @@ void	ft_put_pixel_img(t_env env, t_pos point, t_img img)
 		ft_memcpy(&img.data[(point.y * img.sizeline) + (point.x * 4)], &img.clrline, (size_t)(sizeof(int)));
 }
 
-t_3dpos	ft_new_3d_pos(int x, int y, int z)
-{
-	t_3dpos dp1;
-
-	dp1.x = x;
-	dp1.y = y;
-	dp1.z = z;
-	return (dp1);
-}
-
 void	ft_put_3d_tab(t_env env, t_3dpos **tab, t_img img, t_pos max)
 {
 	int	x;
@@ -76,35 +66,4 @@ void	ft_put_3d_tab(t_env env, t_3dpos **tab, t_img img, t_pos max)
 		y++;
 	}
 	ft_end_line(env, tab, img, max);
-}
-
-void	ft_end_line(t_env env, t_3dpos **tab, t_img img, t_pos max)
-{
-	int x;
-	int y;
-	// int t;
-	// t_pos z;
-
-	// z.z = 0;
-	// t = 0;
-	// y = 0;
-	// x = 0;
-	while (y + 1 < max.y)
-		{
-			ft_3d_line(env, tab[y][max.x - 1], tab[y + 1][max.x - 1], img);
-			// while (t != GAP)
-			// {
-			// 	z.x = max.x;
-			// 	z.y = t;
-			// 	z.z = 0;
-			// 	ft_3d_line(env, tab[y][max.x - 1], z, img);
-			// 	t++;
-			// }
-			y++;
-		}
-	while (x + 1 < max.x)
-		{
-			ft_3d_line(env, tab[max.y - 1][x], tab[max.y - 1][x + 1], img);
-			x++;
-		}
 }

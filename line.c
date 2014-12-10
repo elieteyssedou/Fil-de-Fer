@@ -89,3 +89,22 @@ void	ft_line_put_2(t_all *all, t_line line, t_img img)
 		ft_put_pixel_img(all->env, line.p1, img);
 	}
 }
+
+void	ft_end_line(t_all *all, t_3dpos **tab, t_3dpos max)
+{
+	int x;
+	int y;
+
+	y = 0;
+	x = 0;
+	while (y + 1 < max.y)
+	{
+		ft_3d_line(all, tab[y][max.x - 1], tab[y + 1][max.x - 1]);
+		y++;
+	}
+	while (x + 1 < max.x)
+	{
+		ft_3d_line(all, tab[max.y - 1][x], tab[max.y - 1][x + 1]);
+		x++;
+	}
+}

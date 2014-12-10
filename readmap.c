@@ -35,27 +35,37 @@ t_all			ft_read_map(int fd, char c)
 {
 	char		*tmp;
 	char		**tabx;
-	t_3dpos		pt;
+	int			erno;
 	t_list		*lst;
 	t_all		all;
 
 	lst = NULL;
-	pt.y = 0;
-	while (get_next_line(fd, &tmp))
+	all.max.y = 0;
+	while ((erno = get_next_line(fd, &tmp)))
 	{
-		pt.x = 0;
+		ft_dir_err(erno);
+		all.max.x = 0;
 		tabx = ft_strsplit(tmp, c);
 		free(tmp);
 		while (*tabx)
 		{
-			pt.z = ft_atoi(*tabx++);
-			ft_lstadd(&lst, ft_lstnew(&pt, sizeof(t_3dpos)));
-			pt.x++;
+			all.max.z = ft_atoi(*tabx);
+			ft_lstadd(&lst, ft_lstnew(&all.max, sizeof(t_3dpos)));
+			all.max.x++;
+			free(*tabx++);
 		}
-		pt.y++;
+		all.max.y++;
 	}
-	all.tab = ft_fill_tab(lst, pt);
-	all.max.x = pt.x;
-	all.max.y = pt.y;
+	all.tab = ft_fill_tab(lst, all.max);
 	return (all);
+}
+
+void			ft_dir_err(int erno)
+{
+	if (erno == -1)
+	{
+		ft_putstr_fd("fdf: The file you tried to open is a directory. ", 2);
+		ft_putendl_fd("Put a valid map as argument.", 2);
+		exit (0);
+	}
 }
